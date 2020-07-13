@@ -1,3 +1,8 @@
+"""
+This is a demo to train mninst.
+author: Marcorss / Madanfeng
+"""
+
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, optimizers
 

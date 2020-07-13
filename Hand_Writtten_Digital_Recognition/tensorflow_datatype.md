@@ -116,3 +116,69 @@ print(tf.random.uniform([2, 2], minval=0, maxval=1))
 
 ### 2.5 `tf.constant`
 注意： 每行必须有相同维度的元素
+
+## 3. 索引和切片  
+### Selective Indexing
+例如，有班级的数据集，data:[classes, students, subjects]  # [4, 35, 8]
+代表有classes个班级，每个班级students个学生，每个学生有subjects个科目。
+#### 1.`tf.gather`
+只在某一个维度
+```buildoutcfg
+tf.gather(data, axis=0, indices=[2, 1, 3, 0])
+# axis=0, 表示取第0个维度，即班级。
+# indices=[2, 1, 3, 0], 代表班级的次序为原来的index的第2， 1， 3， 0。
+# shape = [4, 35, 8]
+
+tf.gather(data, axis=1, indices=[2, 3, 7, 9, 16])
+# 同理，对每个班级的第2，3，7，9，16个同学进行抽取所有科目。
+# shape = [4, 5, 8]
+```
+
+#### 2. `tf.gather_nd`
+多个维度
+```buildoutcfg
+tf.gather_nd(data, [0])
+# 取0号班级的所有学生的所有科目
+# shape = [35, 8]
+
+tf.gather_nd(data, [0, 1])
+# 取0号班级的1号学生的所有科目
+# shape = [8]
+
+tf.gather_nd(data, [0, 1, 2])
+# 取0号班级的1号学生的2号科目
+# shape = []
+
+tf.gather_nd(data, [[0, 1, 2]])
+# 取0号班级的1号学生的2号科目
+# shape = [1]
+
+tf.gather_nd(data, [[0, 1], [2, 3]])
+# 取 0号班级的1号学生 和 2号班级的3号学生 的所有科目
+# shape = [2, 8]
+
+tf.gather_nd(data, [[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+# 取 0号班级的0号同学的0号科目 和 1号班级的1号同学的1号科目 和 2号班级的2号同学的2号科目
+# shape = [3]
+
+tf.gather_nd(data, [[[0, 0, 0], [1, 1, 1], [2, 2, 2]]])
+# 取 0号班级的0号同学的0号科目 和 1号班级的1号同学的1号科目 和 2号班级的2号同学的2号科目
+# shape = [1, 3]
+```
+
+#### 3. `tf.boolean_mask`
+```buildoutcfg
+data.shape = [4, 28, 28, 3]
+
+tf.boolean_mask(data, mask=[True, True, False, False])
+# 取前两个图片， shape = [2, 28, 28, 3]
+
+tf.boolean_mask(data, mask=[True, True, False], axis=3)
+# 取所有图片的 R G 两个通道， shape = [4, 28, 28, 2]
+
+a = tf.ones([2, 3, 4])
+tf.boolean_mask(a, mask=[[True, False, False], [False, True, True]])
+# 取 0号的第0个， 1号的第1，2个， 其中每个有4维
+# shape = [3, 4]
+```
+
